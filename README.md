@@ -85,10 +85,11 @@ Le système est évalué sur un jeu de test de référence (*Golden Dataset*) co
 * **Modèles LLM/VLM :** Open-Weights (`Mistral-7B-Instruct`, `Qwen2-VL-7B`)
 * **Infra GPU :** 2x Nvidia GPU 24 Go VRAM
 
-```
 
-Tu peux commiter et pousser ce fichier avec `git add README.md`, `git commit -m "docs: ajout du README principal"` et `git push origin main`.
 
-Souhaites-tu faire cette mise à jour Git avant de lancer la Sandbox GPU ?
+## 👤 Auteur & Contact
 
-```
+**Abel FOUOBE** – *Senior Data Scientist / ML Engineer*
+* **LinkedIn :** [linkedin.com/in/abel-fouobe-55486181](https://www.linkedin.com/in/abel-fouobe-55486181)
+* **GitHub :** [@Abdata92](https://github.com/Abdata92)
+* **Projet :** RAG ALM Financial Assistant
