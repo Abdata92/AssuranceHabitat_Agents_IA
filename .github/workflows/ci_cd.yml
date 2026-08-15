@@ -1,0 +1,74 @@
+name: CI/CD Pipeline - RAG ALM Assistant
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+# Permissions globales pour autoriser le push sur GHCR
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  # ----------------------------------------------------
+  # JOB 1 : CONTINUOUS INTEGRATION (CI)
+  # ----------------------------------------------------
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Installation de Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Installation des dépendances
+        run: poetry install --no-root
+
+      - name: Exécution des tests unitaires
+        run: poetry run pytest tests/
+
+  # ----------------------------------------------------
+  # JOB 2 : CONTINUOUS DEPLOYMENT (CD) - DOCKER BUILD
+  # ----------------------------------------------------
+  build-and-push-docker:
+    needs: test-and-lint
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Connexion au Container Registry (GitHub Packages)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Passer le nom du dépôt en minuscules
+        id: string
+        run: echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Build et Push de l'image Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ env.REPO_LOWER }}:latest
+            ghcr.io/${{ env.REPO_LOWER }}:${{ github.sha }}
