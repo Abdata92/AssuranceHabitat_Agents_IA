@@ -33,13 +33,43 @@ Analyse la déclaration de l'assuré et vérifie la présence de :
 NE VALIDE PAS les garanties à cette étape : vérifie uniquement la COMPLÉTUDE.
 """
 
-def declaration_node(state: SinistreState, llm_model):
+def declaration_node(state: SinistreState, llm_model=None):
+    raw_text = state.get("raw_declaration", "")
     images_presentes = len(state.get("image_paths", [])) > 0
 
+    # 1. Fallback si aucun modèle LLM n'est fourni (Mode Test / Sans GPU)
+    if llm_model is None:
+        text_lower = raw_text.lower()
+        famille = "Dégât des eaux"
+        if "incendie" in text_lower or "feu" in text_lower:
+            famille = "Incendie"
+        elif "cambriol" in text_lower or "vol" in text_lower:
+            famille = "Cambriolage"
+
+        has_desc = len(raw_text.strip()) > 10
+        champs_m = []
+        if not images_presentes:
+            champs_m.append("photos")
+        if not has_desc:
+            champs_m.append("description")
+
+        is_complete = len(champs_m) == 0
+
+        return {
+            "famille_sinistre": famille,
+            "date_sinistre": "Inconnue",
+            "description": raw_text,
+            "has_photos": images_presentes,
+            "declaration_complete": is_complete,
+            "champs_manquants": champs_m,
+            "statut_dossier": "DECLARATION_VALIDEE" if is_complete else "DECLARATION_INCOMPLETE"
+        }
+
+    # 2. Exécution normale avec extraction structurée LLM
     prompt = f"""
     {DECLARATION_SYSTEM_PROMPT}
 
-    Déclaration : \"\"\"{state['raw_declaration']}\"\"\"
+    Déclaration : \"\"\"{raw_text}\"\"\"
     Nombre d'images : {len(state.get('image_paths', []))}
     """
 

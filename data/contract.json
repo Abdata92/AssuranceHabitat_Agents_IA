@@ -1,0 +1,28 @@
+{
+  "company": "AssurHabitat SA",
+  "contract_number": "HAB-2025-123456",
+  "policyholder": "Jean Dupont",
+  "address": "12 Rue des Lilas, 75012 Paris",
+  "effective_date": "01/01/2025",
+  "guarantees": {
+    "degat_des_eaux": {
+      "name": "Dégâts des eaux",
+      "legal_delay_days": 5,
+      "max_coverage": 25000,
+      "deductible": 150
+    },
+    "incendie": {
+      "name": "Incendie / Explosion",
+      "legal_delay_days": 5,
+      "max_coverage": 100000,
+      "deductible": 300
+    },
+    "vol": {
+      "name": "Vol / Cambriolage / Vandalisme",
+      "legal_delay_days": 2,
+      "max_coverage": 20000,
+      "deductible": 200,
+      "requires_police_report": true
+    }
+  }
+}

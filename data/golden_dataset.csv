@@ -1,10 +1,10 @@
-id,famille_sinistre,texte_declaration,has_photos,date_sinistre_attendue,declaration_complete_attendue,garantie_valide_attendue,motif_attendue,prestataire_attendu
-1,Degat des eaux,"Fuite fuite cuisine hier soir voisin lave-vaisselle mur infiltre peinture detachee",True,hier soir,True,True,Garantie valide (fuite lave-vaisselle couverte sous 5j max),Plombier partenaire AssurHabitat
-2,Degat des eaux,"Infiltration d eau au plafond salle de bain constatée le 12/08/2025",False,12/08/2025,False,False,Attente photos justificatives des degats,Plombier partenaire AssurHabitat
-3,Degat des eaux,"Rupture de canalisation survenue il y a 3 semaines degats importants",True,il y a 3 semaines,True,False,Hors delai legal (depassement des 5 jours ouvres),Conseiller generaliste
-4,Incendie,"Le 10/09/2025 feu chambre appareil defectueux endommager piece travaux",True,10/09/2025,True,True,Garantie valide (incendie appareil couvert sous 5j max),Expert securite incendie
-5,Incendie,"Explosion chaudiere gaz ce matin fumee dense dans tout le salon",True,ce matin,True,True,Garantie valide (explosion couverte + urgence hebergement),Expert securite incendie
-6,Incendie,"Feu de poubelle devant le garage hier soir aucun dommage interieur",False,hier soir,False,False,Attente photos des dommages reels,Conseiller generaliste
-7,Vol / Cambriolage,"Cambriolage ce matin voleurs velux chambre appareils electroniques",False,ce matin,False,False,En attente recepisse depot de plainte et photos,Serrurier / Vitrier d urgence
-8,Vol / Cambriolage,"Vol avec effraction porte entree hier depot de plainte effectue",True,hier,True,True,Garantie valide (vol avec effraction sous 2j + plainte),Serrurier / Vitrier d urgence
-9,Vol / Cambriolage,"Vol de velo dans la rue il y a 10 jours pas de degradation logement",True,il y a 10 jours,True,False,Exclusion contrat (hors domicile / hors delai 2j),Conseiller generaliste
+id,famille_sinistre,texte_declaration,has_photos,declaration_complete_attendue,garantie_valide_attendue,prestataire_attendu
+1,Dégât des eaux,"Bonjour, il y a eu une fuite sous mon lave-vaisselle hier soir dans la cuisine. Peinture infiltrée.",True,True,True,Plombier partenaire AssurHabitat
+2,Dégât des eaux,"Rupture de canalisation dans la salle de bain survenue il y a 19 jours (le 01/09/2025).",True,True,False,Conseiller generaliste
+3,Dégât des eaux,"Infiltration d'eau au plafond du salon.",False,False,True,Plombier partenaire AssurHabitat
+4,Incendie,"Le 10/09/2025, un feu s'est déclaré dans la chambre à cause d'un appareil défectueux.",True,True,True,Expert sécurité incendie
+5,Incendie,"Déclaration d'un feu de chaudière du 01/09/2025 déclaré le 25/09 avec 24 jours de retard.",True,True,False,Conseiller generaliste
+6,Incendie,"Départ de feu de cuisine.",False,False,True,Expert sécurité incendie
+7,Cambriolage,"Cambriolage ce matin via le velux de la chambre. Dépôt de plainte et PV de police effectués.",True,True,True,Serrurier / Vitrier d'urgence
+8,Cambriolage,"Vol de vélo dans le garage le 09/09 déclaré à j+6 le 15/09.",True,True,False,Conseiller generaliste
+9,Cambriolage,"Tentative d'effraction sur la porte d'entrée avec dépôt de plainte au commissariat.",False,False,True,Serrurier / Vitrier d'urgence

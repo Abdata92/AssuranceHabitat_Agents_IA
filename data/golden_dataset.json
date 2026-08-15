@@ -1,0 +1,173 @@
+[
+  {
+    "id": "CASE_WATER_01",
+    "category": "degat_des_eaux",
+    "input": {
+      "declaration_date": "2025-09-12",
+      "incident_date": "2025-09-11",
+      "description": "Fuite importante sous le lave-vaisselle infiltrant la cuisine.",
+      "attachments": ["IMG_4580.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": true,
+      "validation_reason": "Sinistre couvert et déclaré dans le délai de 5 jours.",
+      "deductible": 150,
+      "max_coverage": 25000,
+      "orchestration_provider": "Plombier partenaire"
+    }
+  },
+  {
+    "id": "CASE_WATER_02",
+    "category": "degat_des_eaux",
+    "input": {
+      "declaration_date": "2025-09-20",
+      "incident_date": "2025-09-01",
+      "description": "Rupture de canalisation dans la salle de bain.",
+      "attachments": ["salle_de_bain.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": false,
+      "validation_reason": "Délai de déclaration dépassé (19 jours écoulés, maximum 5 jours).",
+      "deductible": 150,
+      "max_coverage": 25000,
+      "orchestration_provider": "Conseiller humain (Hors délai)"
+    }
+  },
+  {
+    "id": "CASE_WATER_03",
+    "category": "degat_des_eaux",
+    "input": {
+      "declaration_date": "2025-09-10",
+      "incident_date": "2025-09-09",
+      "description": "Infiltration d'eau au plafond du salon.",
+      "attachments": []
+    },
+    "expected_output": {
+      "declaration_is_complete": false,
+      "missing_fields": ["attachments"],
+      "validation_covered": true,
+      "validation_reason": "Sinistre couvert sous réserve de réception des photos.",
+      "deductible": 150,
+      "max_coverage": 25000,
+      "orchestration_provider": "Plombier partenaire"
+    }
+  },
+  {
+    "id": "CASE_FIRE_01",
+    "category": "incendie",
+    "input": {
+      "declaration_date": "2025-09-11",
+      "incident_date": "2025-09-10",
+      "description": "Un feu s'est déclaré dans la chambre à cause d'un appareil défectueux.",
+      "attachments": ["Chambre_1.jpg", "Chambre_2.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": true,
+      "validation_reason": "Incendie couvert et déclaré sous 5 jours.",
+      "deductible": 300,
+      "max_coverage": 100000,
+      "orchestration_provider": "Expert incendie"
+    }
+  },
+  {
+    "id": "CASE_FIRE_02",
+    "category": "incendie",
+    "input": {
+      "declaration_date": "2025-09-25",
+      "incident_date": "2025-09-01",
+      "description": "Explosion de la chaudière provoquant des brûlures sur les murs.",
+      "attachments": ["chaudiere.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": false,
+      "validation_reason": "Déclaration hors délai légal de 5 jours.",
+      "deductible": 300,
+      "max_coverage": 100000,
+      "orchestration_provider": "Conseiller humain (Hors délai)"
+    }
+  },
+  {
+    "id": "CASE_FIRE_03",
+    "category": "incendie",
+    "input": {
+      "declaration_date": "2025-09-12",
+      "incident_date": "2025-09-12",
+      "description": "",
+      "attachments": ["fumee.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": false,
+      "missing_fields": ["description"],
+      "validation_covered": true,
+      "validation_reason": "Sinistre couvert sous réserve de précision de la description.",
+      "deductible": 300,
+      "max_coverage": 100000,
+      "orchestration_provider": "Expert incendie"
+    }
+  },
+  {
+    "id": "CASE_THEFT_01",
+    "category": "vol",
+    "input": {
+      "declaration_date": "2025-09-10",
+      "incident_date": "2025-09-09",
+      "description": "Cambriolage ce matin via le velux de la chambre. Vol des appareils électroniques. Dépôt de plainte effectué.",
+      "attachments": ["pv_plainte.pdf", "velux_casse.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": true,
+      "validation_reason": "Vol déclaré sous 2 jours avec justificatif de plainte.",
+      "deductible": 200,
+      "max_coverage": 20000,
+      "orchestration_provider": "Serrurier / Forces de l'ordre"
+    }
+  },
+  {
+    "id": "CASE_THEFT_02",
+    "category": "vol",
+    "input": {
+      "declaration_date": "2025-09-15",
+      "incident_date": "2025-09-09",
+      "description": "Vol de vélo dans le garage fermé.",
+      "attachments": ["porte_forcee.jpg"]
+    },
+    "expected_output": {
+      "declaration_is_complete": true,
+      "missing_fields": [],
+      "validation_covered": false,
+      "validation_reason": "Délai de déclaration dépassé pour un vol (déclaré à J+6, maximum 2 jours).",
+      "deductible": 200,
+      "max_coverage": 20000,
+      "orchestration_provider": "Conseiller humain (Hors délai)"
+    }
+  },
+  {
+    "id": "CASE_THEFT_03",
+    "category": "vol",
+    "input": {
+      "declaration_date": "2025-09-10",
+      "incident_date": "2025-09-09",
+      "description": "Tentative d'effraction sur la porte d'entrée.",
+      "attachments": []
+    },
+    "expected_output": {
+      "declaration_is_complete": false,
+      "missing_fields": ["attachments"],
+      "validation_covered": true,
+      "validation_reason": "Garantie vol applicable sous réserve d'envoi de la photo de la porte et du récépissé de plainte.",
+      "deductible": 200,
+      "max_coverage": 20000,
+      "orchestration_provider": "Serrurier / Forces de l'ordre"
+    }
+  }
+]

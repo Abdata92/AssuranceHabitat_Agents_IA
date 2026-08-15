@@ -33,16 +33,34 @@ Règles de gestion :
 1. Évalue la gravité visuelle des dégâts sur la base des photos fournies.
 2. Estime le coût global des réparations ainsi que le montant d'indemnisation estimé.
 3. Rédige un rapport synthétique clair et technique.
-4. NE PRENDS PAS de décision finale envers l'assuré : délègue systématiquement la suite du dossier au conseiller humain.
+4. NE PRENDS PAS de décision finale envers l'assuré : délègue systématiquement la suite du processus au conseiller humain.
 """
 
 # 3. Nœud LangGraph
-def expertise_node(state: SinistreState, vlm_model):
+def expertise_node(state: SinistreState, vlm_model=None):
     """
     Nœud LangGraph exécutant l'Agent IA Expertise (VLM multimodal).
     """
     images = state.get("image_paths", [])
 
+    # 1. Fallback si vlm_model est None (Mode Test / Sans GPU)
+    if vlm_model is None:
+        nb_images = len(images)
+        desc_visuelle = (
+            f"Analyse simulée : {nb_images} image(s) reçue(s). Présence de traces visibles liées au sinistre."
+            if nb_images > 0
+            else "Aucune photo fournie pour analyse visuelle."
+        )
+        cout_estime = 1500.00
+        indem_estimee = 1350.00  # Exemple avec franchise appliquée
+
+        return {
+            "analyse_image": desc_visuelle,
+            "estimation_degats": f"{cout_estime:.2f} € (Indemnisation : {indem_estimee:.2f} €)",
+            "statut_dossier": "TRANSMIS_CONSEILLER"
+        }
+
+    # 2. Exécution normale avec VLM
     prompt = f"""
     {EXPERTISE_SYSTEM_PROMPT}
 
@@ -53,7 +71,6 @@ def expertise_node(state: SinistreState, vlm_model):
     - Chemins des images : {images}
     """
 
-    # Traitement multimodal (VLM Open-Weights type Qwen2-VL ou LLaVA)
     structured_vlm = vlm_model.with_structured_output(ExpertiseAnalyse)
     result: ExpertiseAnalyse = structured_vlm.invoke(prompt)
 
