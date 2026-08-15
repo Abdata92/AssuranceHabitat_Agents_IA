@@ -7,15 +7,14 @@ readme = "README.md"
 packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.11,<3.14" #python = "^3.10"
 langgraph = ">=0.2.0"
 langchain-core = ">=0.3.0"
 langchain-community = ">=0.3.0"
 pydantic = ">=2.0.0"
 pandas = ">=2.0.0"
 pillow = ">=10.0.0"
-torch = ">=2.0.0,<3.0.0"
-torch = "^2.13.0"
+torch = ">=2.0.0,<3.0.0" #Remplacer  torch = "^2.13.0"
 transformers = "^5.15.0"
 accelerate = "^1.14.0"
 
