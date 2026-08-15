@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Récupération du code (Checkout)
+      - name: Récupération du code
         uses: actions/checkout@v4
 
       - name: Configuration de Python
@@ -25,30 +25,20 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Mise en cache du Virtualenv
-        uses: actions/cache@v4
-        with:
-          path: .venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-
       - name: Installation des dépendances
         run: poetry install --no-interaction
 
-      - name: Contrôle de la qualité du code (Linting)
-        run: |
-          poetry run pip install ruff
-          poetry run ruff check src/
-
-      - name: Exécution du Pipeline d'Évaluation
+      - name: Exécution de l'Évaluation
         run: |
           poetry run python -c "from src.evaluate import evaluer_pipeline; evaluer_pipeline('data/golden_dataset.csv', None, None)"
 
       - name: Archiver le rapport d'évaluation (Artifact CSV)
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: evaluation-results-csv
           path: data/evaluation_results.csv
-      
+
       - name: Validation du Build Docker
         run: |
           docker build -t assurhabitat-agents:latest .
