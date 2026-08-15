@@ -41,3 +41,6 @@ def evaluer_pipeline(csv_path: str, llm_model, vlm_model):
     print("--- BILAN DE L'ÉVALUATION ---")
     print(df_results.mean(numeric_only=True))
     return df_results
+
+    if __name__ == "__main__":
+    evaluer_pipeline("data/golden_dataset.csv", None, None)
