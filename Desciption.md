@@ -151,3 +151,11 @@ Pour chaque exemple du jeu de test, le projet exige d'évaluer les métriques su
 # 6. Tester la pipeline en local 
 
 Le script de test local **test_local.py** simule l'exécution du workflow **LangGraph** sur ton PC avec des données de test (mocks), sans nécessiter de charger de modèle lourd en VRAM.
+
+# 7. Executer le projet sur la sandbox 
+1.  tester les models sous jupyter:
+    * d'abord executer cette commande pour enregister le notebook dans l'environnement poetry "poetry run python -m ipykernel install --user --name=assurhabitat-env --display-name "Python (AssurHabitat .venv)" 
+    * réinstaller la version GPU de PyTorch (CUDA 12.1) dans l'environnement virtuel du projet avec 
+    "poetry run pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 --force-reinstall"
+    * Vérification du bon fonctionnement:
+    "poetry run python -c "import torch; print('CUDA disponible :', torch.cuda.is_available()); print('Nombre de GPUs :', torch.cuda.device_count())""
