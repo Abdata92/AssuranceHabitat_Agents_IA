@@ -18,6 +18,8 @@ torch = ">=2.0.0,<3.0.0" #Remplacer  torch = "^2.13.0"
 transformers = "^5.15.0"
 accelerate = "^1.14.0"
 langchain-ollama = "^1.1.0"
+fastapi = "^0.141.1"
+uvicorn = "^0.52.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
