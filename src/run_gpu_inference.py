@@ -2,16 +2,19 @@ import pandas as pd
 from langchain_ollama import ChatOllama
 from src.evaluate import evaluer_pipeline
 
-print("--- Initialisation des modèles sur GPU ---")
+print("--- Initialisation des modèles sur GPU (Mistral 7B + LLaVA) ---")
 
+# LLM Texte pour Déclaration et Validation
 llm_gpu = ChatOllama(
-    model= "mistral", #"llama3.2", 
+    model="mistral",
     temperature=0.0
-    )
+)
+
+# VLM Vision pour l'Expertise (LLaVA)
 vlm_gpu = ChatOllama(
-    model="llama3.2-vision", 
+    model="llava",
     temperature=0.0
-    )
+)
 
 print("--- Inférence réelle en cours sur le Golden Dataset ---")
 
@@ -21,4 +24,4 @@ df_results = evaluer_pipeline(
     vlm_model=vlm_gpu
 )
 
-print("\n--- Bilan enregistré dans data/evaluation_results.csv ---")
+print("\n--- Résultats enregistrés dans data/evaluation_results.csv ---")

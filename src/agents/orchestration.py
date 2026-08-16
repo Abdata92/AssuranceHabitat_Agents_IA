@@ -4,17 +4,17 @@ from src.agents.declaration_agent import declaration_node
 from src.agents.validation_agent import validation_node
 from src.agents.expertise_agent import expertise_node
 
-# 1. Routage : passer à la validation même si la déclaration a des champs manquants
+# 1. Routage Déclaration -> Validation
 def route_after_declaration(state: SinistreState) -> str:
     return "validation"
 
-# 2. Routage : aller à l'expertise si valide, sinon aller directement à l'orchestration
+# 2. Routage Validation -> Expertise (si valide) OU Orchestration (si refusé)
 def route_after_validation(state: SinistreState) -> str:
-    if state.get("garantie_valide"):
+    if state.get("garantie_valide", False):
         return "expertise"
     return "orchestration"
 
-# 3. Nœud d'orchestration (attribue systématiquement un prestataire)
+# 3. Nœud d'Orchestration : Sélection du prestataire partenaire
 def orchestration_node(state: SinistreState):
     if not state.get("garantie_valide", False):
         prestataire = "Conseiller generaliste"
@@ -31,7 +31,7 @@ def orchestration_node(state: SinistreState):
             
     return {"prestataire_recommande": prestataire}
 
-# 4. Graphe multi-agents
+# 4. Construction et compilation du graphe multi-agents
 def create_assurhabitat_graph(llm_text=None, vlm_vision=None):
     workflow = StateGraph(SinistreState)
 
