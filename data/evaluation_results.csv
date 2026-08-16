@@ -1,10 +1,10 @@
 id,famille,Completude_Declaration_Score,Conformite_Contrat_Score,Precision_Prestataire_Score
 1,Dégât des eaux,1.0,1.0,1.0
 2,Dégât des eaux,1.0,1.0,1.0
-3,Dégât des eaux,1.0,1.0,0.0
+3,Dégât des eaux,1.0,1.0,1.0
 4,Incendie,1.0,1.0,1.0
 5,Incendie,1.0,1.0,1.0
 6,Incendie,1.0,1.0,1.0
 7,Cambriolage,1.0,1.0,1.0
-8,Cambriolage,1.0,0.0,0.0
+8,Cambriolage,1.0,1.0,1.0
 9,Cambriolage,1.0,1.0,1.0
