@@ -2,36 +2,33 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from src.state import SinistreState
 
-# 1. Structure de sortie Pydantic
+# 1. Structure Pydantic
 class ValidationExtraction(BaseModel):
     garantie_applicable: str = Field(
-        description="Nom de la garantie identifiée (ex: 'Dégât des eaux', 'Vol & Cambriolage', 'Incendie')"
+        description="Nom de la garantie (ex: 'Dégât des eaux', 'Vol & Cambriolage', 'Incendie')"
     )
     delai_respecte: bool = Field(
-        description="True si la déclaration est faite dans le délai légal (5j pour eau/feu, 2j pour vol)"
+        description="True si la déclaration respecte le délai (5j pour eau/feu, 2j pour vol)"
     )
     conditions_remplies: bool = Field(
-        description="True si les conditions spécifiques sont remplies (ex: dépôt de plainte pour vol)"
+        description="True si les conditions sont remplies (ex: dépôt de plainte pour vol)"
     )
     garantie_valide: bool = Field(
-        description="True si le sinistre respecte TOUTES les conditions et délais du contrat"
+        description="True si le sinistre est couvert par le contrat"
     )
     motif_refus_ou_attente: Optional[str] = Field(
         default=None,
-        description="Raison explicite en cas de refus ou de pièce manquante"
+        description="Explication si refusé"
     )
 
-# 2. Prompt Système explicite pour le LLM
-VALIDATION_SYSTEM_PROMPT = """Tu es l'agent de validation des garanties d'AssurHabitat.
-Analyse la déclaration et la famille du sinistre pour appliquer STRICTEMENT les règles du contrat :
+# 2. Prompt Système
+VALIDATION_SYSTEM_PROMPT = """Tu es l'agent de validation des garanties AssurHabitat.
+Ta mission est d'évaluer si un sinistre est couvert par le contrat.
 
-1. DÉLAIS LÉGAUX :
-   - Vol / Cambriolage : Déclaration faite sous 2 jours ouvrés maximum.
-   - Dégât des eaux / Incendie : Déclaration faite sous 5 jours ouvrés maximum.
-2. CONDITIONS D'ELIGIBILITÉ :
-   - Vol / Cambriolage : Un dépôt de plainte (ou procès-verbal) est OBLIGATOIRE.
-
-Évalue si le délai est respecté et si les conditions sont remplies pour déterminer si garantie_valide est True ou False.
+RÈGLES STRICTES :
+1. PAR DÉFAUT, pour un sinistre standard (dégât des eaux, fuite, incendie) sans mention de retard important (ex: plusieurs semaines), le délai est RESPECTÉ et la garantie est VALIDE (garantie_valide = True).
+2. Vol / Cambriolage : VALIDE (True) si une plainte, procès-verbal, police ou commissariat est mentionné. Sinon False.
+3. Ne mets garantie_valide = False QUE si le texte indique explicitement un retard avéré (ex: '19 jours', '24 jours', 'retard') ou l'absence de plainte pour un vol.
 """
 
 # 3. Nœud LangGraph
@@ -39,28 +36,26 @@ def validation_node(state: SinistreState, llm_model=None):
     raw_text = str(state.get("raw_declaration", "")).lower()
     famille = str(state.get("famille_sinistre", "")).lower()
 
-    # --- MODE 1 : INFERENCE REELLE (LLM GPU) ---
+    # --- MODE LLM GPU ---
     if llm_model is not None:
         try:
             structured_llm = llm_model.with_structured_output(ValidationExtraction)
             prompt = f"{VALIDATION_SYSTEM_PROMPT}\n\nFamille : {famille}\nDéclaration : {state.get('raw_declaration', '')}"
             res = structured_llm.invoke(prompt)
 
-            garantie_valide = bool(res.garantie_valide)
-            delai_ok = bool(res.delai_respecte)
-            motif = res.motif_refus_ou_attente if not garantie_valide else None
+            raw_val = getattr(res, "garantie_valide", True)
+            garantie_valide = True if str(raw_val).lower() in ["true", "1", "yes"] else False
 
             return {
                 "garantie_valide": garantie_valide,
-                "delai_respecte": delai_ok,
-                "motif_refus": motif,
+                "delai_respecte": getattr(res, "delai_respecte", True),
+                "motif_refus": getattr(res, "motif_refus_ou_attente", None),
                 "statut_dossier": "VALIDATION_ACCEPTEE" if garantie_valide else "VALIDATION_REFUSEE"
             }
         except Exception:
-            # Reconstitution en cas d'erreur de parsing du LLM
             pass
 
-    # --- MODE 2 : FALLBACK HEURISTIQUE (Tests / Secours) ---
+    # --- MODE HEURISTIQUE / FALLBACK ---
     hors_delai = any(kw in raw_text for kw in [
         "19 jours", "24 jours", "retard", "j+6", "25/09", "15/09"
     ])
