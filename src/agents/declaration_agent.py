@@ -41,9 +41,10 @@ def declaration_node(state: SinistreState, llm_model=None):
     if llm_model is None:
         text_lower = raw_text.lower()
         famille = "Dégât des eaux"
-        if "incendie" in text_lower or "feu" in text_lower:
+        
+        if any(kw in text_lower for kw in ["incendie", "feu", "fumée"]):
             famille = "Incendie"
-        elif "cambriol" in text_lower or "vol" in text_lower:
+        elif any(kw in text_lower for kw in ["cambriol", "vol", "effraction", "serrure", "voleur", "intrusion", "volé"]):
             famille = "Cambriolage"
 
         has_desc = len(raw_text.strip()) > 10

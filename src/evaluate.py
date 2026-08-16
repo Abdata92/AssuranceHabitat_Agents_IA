@@ -1,5 +1,5 @@
 import pandas as pd
-from src.graph import create_assurhabitat_graph
+from src.agents.orchestration import create_assurhabitat_graph
 
 def reinitialiser_state(row):
     return {
@@ -42,5 +42,5 @@ def evaluer_pipeline(csv_path: str, llm_model, vlm_model):
     print(df_results.mean(numeric_only=True))
     return df_results
 
-    if __name__ == "__main__":
+if __name__ == "__main__":
     evaluer_pipeline("data/golden_dataset.csv", None, None)
