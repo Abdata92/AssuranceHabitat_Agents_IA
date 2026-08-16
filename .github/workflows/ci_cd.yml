@@ -44,12 +44,15 @@ jobs:
     needs: test-and-eval
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Ajouter les permissions requises pour GHCR
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
 
-      # Étape indispensable : conversion du nom du dépôt en minuscules pour GHCR
       - name: Mettre le nom du dépôt en minuscules
         id: string
         run: |
@@ -70,7 +73,6 @@ jobs:
           tags: |
             ghcr.io/${{ env.REPO_LOWERCASE }}/assurhabitat-api:latest
             ghcr.io/${{ env.REPO_LOWERCASE }}/assurhabitat-api:${{ github.sha }}
-
   # --------------------------------------------------
   # 3. PHASE DE DÉPLOIEMENT SUR SERVEUR GPU (CD)
   # --------------------------------------------------
