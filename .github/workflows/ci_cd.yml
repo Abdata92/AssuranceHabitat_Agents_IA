@@ -1,44 +1,88 @@
-name: AssurHabitat CI/CD Pipeline
+name: CI/CD Pipeline - AssurHabitat Multi-Agents
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ main ]
 
 jobs:
-  test-and-evaluate:
+  # --------------------------------------------------
+  # 1. PHASE DE TESTS ET QUALITÉ DU CODE (CI)
+  # --------------------------------------------------
+  test-and-eval:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Récupération du code
+      - name: Checkout du code
         uses: actions/checkout@v4
 
-      - name: Configuration de Python
+      - name: Configuration de Python 3.11
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Installation de Poetry
-        uses: snok/install-poetry@v1
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+        run: pip install poetry
 
       - name: Installation des dépendances
         run: poetry install --no-interaction
 
-      - name: Exécution de l'Évaluation
+      - name: Linter et vérification du code
         run: |
-          poetry run python -c "from src.evaluate import evaluer_pipeline; evaluer_pipeline('data/golden_dataset.csv', None, None)"
+          poetry run python -m py_compile src/api.py
+          poetry run python -m py_compile src/agents/orchestration.py
 
-      - name: Archiver le rapport d'évaluation (Artifact CSV)
-        uses: actions/upload-artifact@v4
-        if: always()
+      - name: Exécution des tests unitaires et d'évaluation (Mode CPU/Mock)
+        run: |
+          poetry run python src/evaluate.py
+
+  # --------------------------------------------------
+  # 2. PHASE DE BUILD DOCKER ET REGISTRY (CD)
+  # --------------------------------------------------
+  build-and-push:
+    needs: test-and-eval
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Connexion au GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
         with:
-          name: evaluation-results-csv
-          path: data/evaluation_results.csv
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Validation du Build Docker
-        run: |
-          docker build -t assurhabitat-agents:latest .
+      - name: Build et Push de l'image Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/assurhabitat-api:latest
+            ghcr.io/${{ github.repository }}/assurhabitat-api:${{ github.sha }}
+
+  # --------------------------------------------------
+  # 3. PHASE DE DÉPLOIEMENT SUR SERVEUR GPU (CD)
+  # --------------------------------------------------
+  deploy-to-gpu-server:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Déploiement distant via SSH sur la machine GPU
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.GPU_SERVER_HOST }}
+          username: ${{ secrets.GPU_SERVER_USER }}
+          key: ${{ secrets.GPU_SERVER_SSH_KEY }}
+          script: |
+            cd /workspace/AssuranceHabitat_Agents_IA
+            git pull origin main
+            docker compose pull api
+            docker compose up -d api
+            docker system prune -f
