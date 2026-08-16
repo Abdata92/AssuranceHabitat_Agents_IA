@@ -159,3 +159,47 @@ Le script de test local **test_local.py** simule l'exécution du workflow **Lang
     "poetry run pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121 --force-reinstall"
     * Vérification du bon fonctionnement:
     "poetry run python -c "import torch; print('CUDA disponible :', torch.cuda.is_available()); print('Nombre de GPUs :', torch.cuda.device_count())""
+
+2. 1. Démarrer le service Ollama sur GPU
+Exécutez cette commande dans votre terminal Sandbox pour démarrer Ollama et télécharger les modèles Open-Weights :
+
+``` Bash
+# 1. Démarrer le serveur Ollama en arrière-plan
+ollama serve &
+
+# 2. Télécharger le LLM Texte (Llama 3.2 3B ou Mistral 7B)
+ollama pull llama3.2
+
+# 3. Télécharger le VLM Multimodal (Qwen2-VL 7B pour la vision)
+ollama pull qwen2-vl
+```
+
+Voici les commandes à exécuter dans votre terminal pour installer Ollama, démarrer le service en arrière-plan et télécharger les modèles nécessaires :
+
+**1. Installer Ollama**
+
+```bash
+curl -fsSL https://ollama.com/install.sh | sh
+
+```
+
+**2. Démarrer le serveur Ollama en arrière-plan**
+
+```bash
+ollama serve &
+
+```
+
+**3. Télécharger les modèles Open-Weights**
+
+```bash
+# Modèle LLM Texte (pour l'agent Déclaration & Validation)
+ollama pull llama3.2
+
+# Modèle VLM Vision (pour l'agent Expertise)
+# ollama pull qwen2-vl
+ollama pull llama3.2-vision
+
+```
+
+Une fois le téléchargement terminé, vous pourrez lancer votre script d'inférence GPU via `poetry run python src/run_gpu_inference.py`.
