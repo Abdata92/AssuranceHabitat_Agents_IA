@@ -36,6 +36,10 @@ jobs:
       - name: Exécution des tests unitaires et d'évaluation
         run: |
           poetry run python src/evaluate.py
+      
+      - name: Run PyTest Suite
+        run: |
+          poetry run pytest -v
 
   # --------------------------------------------------
   # 2. PHASE DE BUILD DOCKER ET REGISTRY (CD)
