@@ -25,7 +25,11 @@ uvicorn = "^0.52.3"
 pytest = "^8.0.0"
 jupyter = "^1.0.0"
 ipykernel = "^7.3.0"
+httpx = "^0.28.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
